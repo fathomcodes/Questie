@@ -145,8 +145,9 @@ Modules\QuestieCleanup.lua
 #Profiler
 Modules\QuestieProfiler.lua
 
-#Debug
-Modules\Debug.lua
+#Faker
+Modules\Faker\Faker.lua
+Modules\Faker\FakerUI.lua
 
 #Main
 Questie.lua

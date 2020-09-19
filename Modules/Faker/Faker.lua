@@ -1,4 +1,4 @@
-QuestieDebugModule = {}
+QuestieFaker = {}
 
 ---@type QuestieDB
 local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
@@ -10,7 +10,7 @@ local _UnitFactionGroup, _UnitLevel, _UnitRace, _UnitClass
 local fakedQuestLogIds = {}
 local fakedCompletedQuestIds = {}
 
-function QuestieDebugModule:ResetFakes()
+function QuestieFaker:Reset()
     UnitFactionGroup = _UnitFactionGroup
     UnitLevel = _UnitLevel
     UnitRace = _UnitRace
@@ -21,27 +21,27 @@ function QuestieDebugModule:ResetFakes()
     end
 end
 
-function QuestieDebugModule:FakeFaction(targetFaction)
+function QuestieFaker:SetFaction(targetFaction)
     if targetFaction ~= "Horde" and targetFaction ~= "Alliance" then
         print("Invalid faction to fake:", targetFaction)
         return
     end
 
     _UnitFactionGroup = UnitFactionGroup
-    UnitFactionGroup = function() return targetFaction end
+    UnitFactionGroup = function(unit) return targetFaction end
 end
 
-function QuestieDebugModule:FakeLevel(targetLevel)
+function QuestieFaker:SetLevel(targetLevel)
     if targetLevel < 0 then
         print("Invalid level to fake:", targetLevel)
         return
     end
 
     _UnitLevel = UnitLevel
-    UnitLevel = function() return targetLevel end
+    UnitLevel = function(unit) return targetLevel end
 end
 
-function QuestieDebugModule:FakeRace(targetRaceIndex, targetRaceName, targetRaceFile)
+function QuestieFaker:SetRace(targetRaceIndex, targetRaceName, targetRaceFile)
     if (not targetRaceName) then
         targetRaceName = ""
     end
@@ -50,10 +50,10 @@ function QuestieDebugModule:FakeRace(targetRaceIndex, targetRaceName, targetRace
     end
 
     _UnitRace = UnitRace
-    UnitRace = function() return targetRaceName, targetRaceFile, targetRaceIndex end
+    UnitRace = function(unit) return targetRaceName, targetRaceFile, targetRaceIndex end
 end
 
-function QuestieDebugModule:FakeClass(targetClassIndex, targetClassName, targetClassFile)
+function QuestieFaker:SetClass(targetClassIndex, targetClassName, targetClassFile)
     if (not targetClassName) then
         targetClassName = ""
     end
@@ -62,16 +62,16 @@ function QuestieDebugModule:FakeClass(targetClassIndex, targetClassName, targetC
     end
 
     _UnitClass = UnitClass
-    UnitClass = function() return targetClassName, targetClassFile, targetClassIndex end
+    UnitClass = function(unit) return targetClassName, targetClassFile, targetClassIndex end
 end
 
-function QuestieDebugModule:AddQuestToCurrentQuestlog(questId)
+function QuestieFaker:AddQuestToCurrentQuestlog(questId)
     fakedQuestLogIds[questId] = true
 
     QuestiePlayer.currentQuestlog[questId] = QuestieDB:GetQuest(questId)
 end
 
-function QuestieDebugModule:FakeCompleteQuest(questId)
+function QuestieFaker:CompleteQuest(questId)
     fakedCompletedQuestIds[questId] = true
 
     Questie.db.char.complete[questId] = true
